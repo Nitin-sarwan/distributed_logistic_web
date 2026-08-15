@@ -1,0 +1,17 @@
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+
+# Local environment overrides. .env is committed here because it holds only the
+# gateway URL — no secrets belong in a VITE_ variable.
+.env.local
+.env.*.local
+
+.DS_Store
+*.log
+npm-debug.log*
+.idea
+.vscode/*
+!.vscode/extensions.json

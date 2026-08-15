@@ -1,0 +1,48 @@
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.auth-form__intro {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* A link rendered as a button: it performs an in-page action rather than
+   navigating, so <a> would be wrong semantically. */
+.auth-form__link-btn {
+  align-self: flex-start;
+  margin-top: calc(var(--space-2) * -1);
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-brand);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.auth-form__link-btn:hover {
+  text-decoration: underline;
+}
+
+.auth-form__switch {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.auth-form__switch button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-brand);
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-form__switch button:hover {
+  text-decoration: underline;
+}

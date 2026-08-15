@@ -1,0 +1,194 @@
+.home {
+  padding-bottom: var(--space-16);
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────── */
+
+.hero {
+  background: linear-gradient(160deg, var(--color-brand) 0%, var(--color-brand-strong) 100%);
+  color: var(--color-text-inverse);
+  padding-block: var(--space-16);
+}
+
+.hero__inner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.hero__title {
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  letter-spacing: -0.03em;
+}
+
+.hero__subtitle {
+  margin-top: var(--space-4);
+  max-width: 46ch;
+  font-size: 1.0625rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Booking widget ────────────────────────────────────────────────────── */
+
+.booking-card {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-xl);
+}
+
+.booking-card__title {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-5);
+}
+
+.booking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.booking__locations {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+}
+
+/* The pickup→drop rail, a visual cue that these two fields are one journey.
+   Its dots align with the middle of each input: 26px of label plus half the
+   44px control. */
+.booking__route {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: 46px 22px;
+}
+
+.booking__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.booking__dot--pickup {
+  background: var(--color-success);
+}
+
+.booking__dot--drop {
+  background: var(--color-accent);
+}
+
+.booking__line {
+  flex: 1;
+  width: 2px;
+  margin-block: 4px;
+  background: var(--color-border-strong);
+}
+
+.booking__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── Highlights ────────────────────────────────────────────────────────── */
+
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+  margin-top: var(--space-12);
+}
+
+.highlight {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.highlight__title {
+  font-size: 1rem;
+  margin-bottom: var(--space-2);
+}
+
+.highlight__description {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+/* ── How it works ──────────────────────────────────────────────────────── */
+
+.how {
+  margin-top: var(--space-16);
+}
+
+.how__title {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-6);
+}
+
+.how__steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.how__step {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+.how__number {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.how__step-title {
+  font-size: 1rem;
+  margin-bottom: var(--space-1);
+}
+
+.how__step-text {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .hero__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .highlights,
+  .how__steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    padding-block: var(--space-10);
+  }
+
+  .booking-card {
+    padding: var(--space-5);
+  }
+}

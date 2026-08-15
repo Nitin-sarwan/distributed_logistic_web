@@ -1,0 +1,201 @@
+/**
+ * Design tokens and global baseline.
+ *
+ * Plain CSS with custom properties — no Tailwind, no CSS-in-JS. The project had
+ * no styling setup to follow, so this adds zero dependencies while still giving
+ * every component one vocabulary for colour, spacing, and elevation.
+ */
+
+:root {
+  /* Brand — a deep indigo reads as logistics/infrastructure rather than retail. */
+  --color-brand: #1f3a8a;
+  --color-brand-strong: #16296b;
+  --color-brand-soft: #eef2ff;
+  --color-brand-border: #c7d2fe;
+
+  /* Accent for the primary CTA. High contrast against the indigo hero. */
+  --color-accent: #f59e0b;
+  --color-accent-strong: #d97706;
+
+  --color-text: #0f172a;
+  --color-text-muted: #56607a;
+  --color-text-subtle: #7c869e;
+  --color-text-inverse: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f8fc;
+  --color-surface-sunken: #eef0f6;
+
+  --color-border: #e2e5ee;
+  --color-border-strong: #ccd1de;
+
+  --color-danger: #b42318;
+  --color-danger-soft: #fef3f2;
+  --color-danger-border: #fecdca;
+
+  --color-success: #067647;
+  --color-success-soft: #ecfdf3;
+  --color-success-border: #abefc6;
+
+  --color-info: #175cd3;
+  --color-info-soft: #eff8ff;
+  --color-info-border: #b2ddff;
+
+  --color-warning: #b54708;
+  --color-warning-soft: #fffaeb;
+  --color-warning-border: #fedf89;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
+  --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.18);
+
+  --header-height: 64px;
+  --content-max: 1140px;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  --focus-ring: 0 0 0 3px rgba(31, 58, 138, 0.22);
+
+  color-scheme: light;
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-text);
+  background: var(--color-surface-alt);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--color-brand);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* A visible focus ring is an accessibility requirement, not a style choice.
+   :focus-visible keeps it for keyboard users without ringing on mouse clicks. */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+/* ── Layout primitives ─────────────────────────────────────────────────── */
+
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+.page {
+  min-height: calc(100vh - var(--header-height));
+  padding-block: var(--space-10) var(--space-16);
+}
+
+.page__title {
+  font-size: 1.75rem;
+  margin-bottom: var(--space-1);
+}
+
+.page__subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-8);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Visible to screen readers only — used for labels that would be redundant
+   on screen but are required for non-visual navigation. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Respect a user's reduced-motion preference. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
