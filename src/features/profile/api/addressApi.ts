@@ -6,27 +6,19 @@ import type { Address, CreateAddressPayload, UpdateAddressPayload } from '../typ
 /**
  * Saved addresses, owned by the User Service.
  *
- * ─────────────────────────────────────────────────────────────────────────────
- * The backend has the `address` table and its SQLAlchemy model, but no routes
- * are wired to them yet — USER_SERVICE.md lists this under "Not implemented".
- *
- * These functions target the conventional REST shape for that table. The
- * contract they expect, all requiring a session:
- *
  *   GET    /api/users/addresses        -> Address[]
- *   POST   /api/users/addresses        -> Address        (201)
+ *   POST   /api/users/addresses        -> Address   (201)
  *   PATCH  /api/users/addresses/{id}   -> Address
  *   DELETE /api/users/addresses/{id}   -> 204
  *
- * `user_id` comes from the authenticated session, never from the request body —
- * accepting it from the client would let anyone write an address onto someone
- * else's account.
+ * All four require a session. `user_id` is never sent: the backend takes the
+ * owner from the session and scopes its queries by it, so a request cannot
+ * read or modify another account's addresses whatever it puts in the URL.
  *
- * Until those routes exist the gateway answers 404, which `useAddresses`
- * detects and renders as an explicit "not available yet" state rather than a
- * misleading error. The UI is complete and switches on the moment the endpoints
- * land; nothing here needs to change.
- * ─────────────────────────────────────────────────────────────────────────────
+ * `useAddresses` still treats a 404 on the list as "not available yet" rather
+ * than an error. That path is no longer the normal case, but it keeps the
+ * screen honest when pointed at a backend that predates these routes or has
+ * not had the address migration applied.
  */
 
 /**

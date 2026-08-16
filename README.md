@@ -224,7 +224,6 @@ flight — a second click on Login would open a second session.
 
 | Gap | What the UI does |
 | --- | --- |
-| **No address endpoints.** The `address` table and model exist; no routes. | Full list/add/delete UI is built. It detects the 404 and shows "not available yet" rather than a misleading error. |
 | **No `PATCH /profile`.** Name and phone are read-only server-side. | Profile shows details read-only. No edit control that could not succeed. |
 | **No Order Service.** | Track Order / My Orders are inert placeholder pages. No order types, no API calls, nothing to unpick later. |
 
@@ -240,9 +239,9 @@ return a clean **422** naming the field, and a valid one returns **201**.
 
 Note `USER_SERVICE.md` still says "`phone` is optional" — that line is stale.
 
-### The address contract this expects
+## Saved addresses
 
-All require a session; `user_id` comes from the session, never the request body:
+Built on both ends. All four endpoints require a session:
 
 ```
 GET    /api/users/addresses        -> Address[]
@@ -258,8 +257,25 @@ DELETE /api/users/addresses/{id}   -> 204
   "latitude": 12.971599, "longitude": 77.594566 }
 ```
 
-Coordinates are accepted as number or string — `NUMERIC` is often serialised as
-a string, and the client coerces either way.
+**`user_id` is never accepted from the client.** It comes from the session, and
+every query is scoped by it in the `WHERE` clause rather than fetched and
+checked afterwards — an ownership check that lives in the query cannot be
+forgotten. A request for someone else's address id gets **404**, not 403:
+answering 403 would confirm the id exists.
+
+Frontend: list, add, delete (`features/profile/`). `PATCH` exists server-side
+for the edit flow, which is deliberately not in this first iteration.
+
+Coordinates are `NUMERIC(9,6)` — about 10cm. The backend rounds to six decimal
+places on input, so a nine-decimal GPS reading is stored rather than rejected,
+and `179.1234567` cannot overflow the nine-digit limit. The client coerces with
+`Number()` either way, since `NUMERIC` is sometimes serialised as a string.
+
+> **Requires migration `a1c4e07b92d3`.** The original `user_address` migration
+> declared `id` without a `PrimaryKeyConstraint`, so the table had no primary
+> key and no sequence — `id` was NOT NULL with nothing to fill it and every
+> insert failed. That migration adds the PK, makes `id` an identity column, and
+> indexes `user_id`.
 
 ---
 

@@ -42,14 +42,13 @@ export const API_ROUTES = {
     /** GET — the signed-in user's record. */
     me: `${USERS}/profile`,
     /**
-     * Saved addresses.
+     * Saved addresses. All four require a session; the backend derives the
+     * owner from it rather than from the URL or body.
      *
-     * The `address` table and its model exist in userServices, but no routes
-     * are wired to them yet (USER_SERVICE.md, "Not implemented"). These are the
-     * conventional REST paths for that table; see README.md for the exact
-     * contract the backend needs to expose. Until it does, the addresses UI
-     * detects the 404 and shows an explicit "not available yet" state instead
-     * of a misleading error.
+     *   GET    /api/users/addresses        -> Address[]
+     *   POST   /api/users/addresses        -> Address   (201)
+     *   PATCH  /api/users/addresses/{id}   -> Address
+     *   DELETE /api/users/addresses/{id}   -> 204
      */
     addresses: `${USERS}/addresses`,
     address: (id: number | string) => `${USERS}/addresses/${id}`,

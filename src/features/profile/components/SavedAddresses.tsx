@@ -66,7 +66,7 @@ export function SavedAddresses() {
           disabled={isLoading || unavailable === 'not-implemented'}
           title={
             unavailable === 'not-implemented'
-              ? 'Available once the User Service exposes its address endpoints.'
+              ? 'Unavailable while the address endpoints cannot be reached.'
               : undefined
           }
         >
@@ -78,9 +78,9 @@ export function SavedAddresses() {
 
       {!isLoading && unavailable === 'not-implemented' && (
         <Alert tone="info">
-          Saved addresses aren&apos;t available yet. The User Service has the{' '}
-          <code>address</code> table but hasn&apos;t exposed its endpoints — this page
-          starts working as soon as it does.
+          Saved addresses aren&apos;t reachable. The User Service isn&apos;t exposing
+          its address endpoints — check it is running the current code and that the
+          address migration has been applied.
         </Alert>
       )}
 
