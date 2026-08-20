@@ -68,15 +68,11 @@
   gap: var(--space-2);
 }
 
-/* Holds the space the auth controls will occupy, so the nav does not jump when
-   the session probe resolves. */
 .header__placeholder {
   display: block;
   width: 132px;
   height: 32px;
 }
-
-/* ── Profile dropdown ──────────────────────────────────────────────────── */
 
 .profile-menu {
   position: relative;
@@ -178,19 +174,15 @@
   .header__inner {
     gap: var(--space-3);
   }
-
   .header__nav {
     gap: var(--space-3);
   }
-
   .header__link {
     font-size: 0.875rem;
   }
-
   .header__brand {
     font-size: 0.9375rem;
   }
-
   .header__placeholder {
     width: 100px;
   }

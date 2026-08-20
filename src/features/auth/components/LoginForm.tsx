@@ -14,7 +14,6 @@ import './AuthForm.css'
 
 export interface LoginFormProps {
   onSuccess: () => void
-  /** Switch the modal to the signup form. */
   onSwitchToSignup: () => void
   onForgotPassword: () => void
 }
@@ -45,14 +44,11 @@ export function LoginForm({
         email: values.email.trim().toLowerCase(),
         password: values.password,
       })
-      // `values.password` goes out of scope here. It is never written to state,
-      // storage, or anywhere it could outlive this call.
+
       onSuccess()
     } catch (error) {
       const apiError = error instanceof ApiError ? error : null
 
-      // A 422 names the offending field; put the message where it belongs
-      // rather than in a banner the user has to map back to an input.
       if (apiError?.fieldErrors && Object.keys(apiError.fieldErrors).length > 0) {
         for (const [field, message] of Object.entries(apiError.fieldErrors)) {
           if (field === 'email' || field === 'password') {
@@ -78,7 +74,7 @@ export function LoginForm({
         type="email"
         autoComplete="email"
         placeholder="you@example.com"
-        // The first field of a freshly opened dialog should hold focus.
+
         autoFocus
         error={errors.email?.message}
         {...register('email')}
@@ -101,8 +97,7 @@ export function LoginForm({
         type="submit"
         size="lg"
         fullWidth
-        // Disabled while in flight, so a second click cannot open a second
-        // session.
+
         isLoading={isSubmitting}
         loadingText="Logging in…"
       >

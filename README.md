@@ -40,29 +40,67 @@ src/
 ├── components/     generic UI. Knows nothing about any feature.
 ├── features/       business functionality, one folder each
 │   ├── auth/       login, signup, session, logout
+│   ├── booking/    the pickup → drop trip
+│   ├── geo/        address search, reverse lookup, the location picker
+│   ├── partner/    the driver app — availability, vehicles, position
 │   └── profile/    profile details, saved addresses
+├── hooks/          hooks that mention no domain concept
 ├── pages/          route-level screens. Compose features; no API calls.
-├── services/       infrastructure — the API client, session transport
+├── services/       infrastructure — HTTP client, error mapping, session transport
 ├── constants/      route paths, API paths
-├── types/          shared types
+├── types/          shared types + global.d.ts (ambient declarations)
 └── utils/          formatting helpers
 ```
 
-### The rule that keeps this scalable
+Every feature has the same inside:
+
+```
+features/<name>/
+├── api/            one module per group of endpoints
+├── components/     presentation. Markup and ARIA, little else.
+├── context/        provider + reducer + context object, where state is shared
+├── hooks/          the feature's behaviour
+├── types.ts        (or types/ when it describes more than one thing)
+├── utils.ts        pure helpers
+├── constants.ts    values mirrored from the backend, and copy
+└── index.ts        the public surface — the only file anyone else imports
+```
+
+### The rules that keep this scalable
 
 **Dependencies point one way: `pages → features → services`.**
 
 - `components/` never imports from `features/`. A component that reads auth
   state cannot be reused, so `Header` receives `user` and callbacks as props and
-  is wired once in `app/App.tsx`.
+  is wired once in `app/App.tsx`. `components/Map` is the same rule applied to
+  the map: it takes coordinates and gives back coordinates, and knows nothing
+  about pickups, addresses, or drivers. What those coordinates *mean* is
+  `features/geo/`.
 - `pages/` never calls an API. They read from feature hooks and render. Every
   page in this app would still compile if the backend changed shape.
 - Each feature exposes a public surface through its `index.ts`. Nothing outside
   reaches into a feature's internals.
 
-Adding orders later is: `features/orders/` with the same
-`api/ components/ hooks/ types.ts` shape, a block in `constants/api.ts`, and
-routes in `app/router.tsx`. Nothing existing changes.
+**Behaviour lives in hooks; components render.** A component with a `useState`,
+a `useEffect`, and a `try/catch` around an API call is three responsibilities in
+one file and cannot be read, tested, or reused separately. So `AvailabilityToggle`
+renders and `useAvailability` decides; `AddressForm` renders and `useAddressForm`
+decides; `MapView` composes six hooks and owns no behaviour of its own.
+
+**`src/hooks/` is for hooks with no domain.** The test is whether the name
+mentions a business concept. `useCombobox` lists items — it cannot tell an
+address from a vehicle — so it is shared. `usePlaceSearch` geocodes, so it
+belongs to `features/geo/`.
+
+**No file over ~150 lines.** Not a lint rule, a smell test: past that, a file is
+usually doing two things. The splits above came from applying it —
+`partnerAuthStore.tsx` (316) became a reducer, a context, a provider, and two
+hooks, each of which says one thing.
+
+**Shared machinery, not copied machinery.** `useIsMounted`, `useSessionProbe`,
+`useSessionExpiry`, `useApiFormErrors`, and `errorMessage()` each exist because
+the same twelve lines had appeared in two places and were already drifting
+apart.
 
 ---
 
@@ -271,11 +309,152 @@ places on input, so a nine-decimal GPS reading is stored rather than rejected,
 and `179.1234567` cannot overflow the nine-digit limit. The client coerces with
 `Number()` either way, since `NUMERIC` is sometimes serialised as a string.
 
+They are set on a map, not typed. See [Maps and coordinates](#maps-and-coordinates).
+
 > **Requires migration `a1c4e07b92d3`.** The original `user_address` migration
 > declared `id` without a `PrimaryKeyConstraint`, so the table had no primary
 > key and no sequence — `id` was NOT NULL with nothing to fill it and every
 > insert failed. That migration adds the PK, makes `id` an identity column, and
 > indexes `user_id`.
+
+---
+
+## Maps and coordinates
+
+Every place in this app is a point, not a line of text. A driver is routed to
+coordinates; the address is how a human confirms the pin is the right one.
+
+### Leaflet, no API key
+
+```
+components/Map/MapView.tsx    a thin wrapper over Leaflet — tiles, pins, a line
+features/geo/                 what the coordinates mean
+```
+
+[Leaflet](https://leafletjs.com/) (~150KB, its own cached chunk) with
+OpenStreetMap raster tiles. No key, no account, no per-request billing.
+`MapView` is about eighty lines of Leaflet rather than a second abstraction over
+it — react-leaflet would be another API to learn and another release train to
+keep in step with, for a map that needs tiles, a few pins, and a dashed line.
+
+Two details worth knowing before editing it:
+
+- **Pins are `divIcon`s, not images.** Leaflet's default marker is a PNG it
+  loads by URL, which bundlers rewrite and Leaflet then cannot find — the
+  classic broken-marker-icon bug. A `div` styles from `Map.css`, inherits the
+  palette, and cannot 404.
+- **Leaflet owns the inner element; React owns the frame.** Two owners on one
+  DOM subtree is how `NotFoundError: failed to remove child` appears on unmount.
+
+Tiles are the one resource the browser fetches directly rather than through the
+gateway: they are images, and proxying them would add a hop to each of the ~20
+requests a single map view makes and buy nothing.
+
+### Three basemaps
+
+`components/Map/tileStyles.ts` — **street**, **light**, and **dark**, switchable
+from the control on any interactive map. All three are key-free: street is
+OpenStreetMap's own raster tiles, light and dark are CARTO's basemaps, whose
+licence requires their attribution alongside OSM's. Both strings are in the tile
+definitions and Leaflet's attribution control is never disabled.
+
+The choice is a `useSyncExternalStore` module store persisted to
+`localStorage`, so it applies to *every* mounted map at once and survives a
+reload. Switching to a map on one screen and leaving the thumbnails on another
+in daylight would read as a bug.
+
+**Dark is a basemap, not a site theme.** Only what sits on the tiles changes —
+controls, attribution, the ring around each pin. Repainting the application
+around it is a different feature with a different switch.
+
+`VITE_MAP_TILE_URL` / `VITE_MAP_ATTRIBUTION` override the **street** style only,
+which is the slot a keyed provider (MapTiler, Stadia, Thunderforest — all the
+same `{z}/{x}/{y}` shape) would take.
+
+### Fullscreen, and how the picker survives it
+
+The expand control uses the Fullscreen API, falling back to a fixed overlay
+where that is refused — iOS Safari has no element fullscreen, and a permissions
+policy can block it in an iframe. Esc exits either way.
+
+The API promotes **one element**, which is why `MapView` takes an `overlay` prop:
+the location picker's centre pin and its "use my location" button render inside
+the map's frame rather than beside it. As siblings they would stay behind in the
+page, and the fullscreen map would have no pin to place.
+
+### Scrolling, zooming, and the stacking context
+
+Three fixes worth knowing, because each looks like a Leaflet bug until you know
+which one it is:
+
+- **The wheel zooms, always.** Trackpad pinch included — a pinch is not a touch
+  event, it is a wheel event with `ctrlKey` set, so anything that filters wheel
+  events filters pinch too. Two-finger pinch on a touchscreen goes through
+  Leaflet's `touchZoom` separately. The cost of this is real and was chosen
+  knowingly: a wheel over the map zooms rather than scrolling the page past it.
+- **`isolation: isolate` on `.map-frame`.** Leaflet numbers its panes 400 and
+  its controls 800–1000 — above this application's entire range, where the modal
+  backdrop is 100 and the header 50. `position: relative` alone creates no
+  stacking context, so a map on the page painted straight over the login and
+  signup dialogs. Isolating makes the whole map stack as one element in document
+  order.
+- **Every z-index inside the map is now local.** Which is why the suggestion
+  list dropped from 500 to 30: it only ever needed to beat the map, and a number
+  chosen to beat Leaflet also beat the dialog.
+
+### Address lookup goes through the gateway
+
+```
+GET /api/geo/search?q=indiranagar&limit=5&lat=&lng=   -> Place[]
+GET /api/geo/reverse?lat=&lng=                        -> { latitude, longitude, place }
+```
+
+**The only two endpoints in this app that work signed out.** The home page lets
+someone describe a delivery before being asked who they are, and a search box
+that demanded an account would undo that. The backend bounds the exposure with a
+per-IP quota, a process-wide throttle, and a shared cache — see the backend's
+`docs/GEO.md`.
+
+The frontend never calls a geocoding provider directly. The provider requires an
+identifying User-Agent and one request per second; a browser can honour neither,
+since every tab would be its own rate limiter.
+
+`place` comes back `null` for a field, a new road, or the middle of a lake. That
+is a `200`, and the UI treats it as such: the pin is valid, only the text is
+missing.
+
+### Where maps appear
+
+| Screen | What the map does |
+| --- | --- |
+| Home — booking widget | Pickup and drop search, both pins, straight-line distance |
+| Saved addresses — card | A still thumbnail, for recognising a place at a glance |
+| Saved addresses — form | `LocationPicker`: search, device location, or drag the pin |
+| Partner dashboard | The driver's last known position, and whether it is stale |
+
+### The three ways to set a point
+
+Search, the device's own position, or dragging the map. None of them covers
+everybody: a warehouse gate, a site entrance, and the correct side of a divided
+road are all places a geocoder cannot name and a person can point at. Dragging
+is the fallback that always works, which is why the pin is fixed at the centre
+of the frame and the map moves under it — on a phone that is the difference
+between a gesture that works and one that fights the finger covering the target.
+
+The latitude and longitude fields on the address form are still there, collapsed
+behind "Enter coordinates manually". They are no longer how anyone is *expected*
+to enter a location, but they are how to paste a pin someone was given, and they
+are what keeps the form usable if the tile server is unreachable.
+
+### Two rules the picker follows
+
+- **A lookup is a suggestion; typed text is a decision.** Dragging the pin fills
+  only the address fields that are still empty. Someone who wrote "Gate 3,
+  behind the loading bay" does not lose it to a road name.
+- **A move that changed nothing is not a choice.** Leaflet fires `moveend` for
+  its own `setView` and for the resize measurement exactly as it does for a
+  drag. Reporting those would have had an untouched picker claim the default
+  city centre as a placed pin.
 
 ---
 

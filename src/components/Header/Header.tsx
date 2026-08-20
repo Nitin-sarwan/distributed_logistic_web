@@ -10,9 +10,7 @@ import { ProfileMenu } from './ProfileMenu'
 import './Header.css'
 
 export interface HeaderProps {
-  /** The signed-in user, or null. */
   user: User | null
-  /** True during the startup session probe, so the nav does not flicker. */
   isLoading: boolean
   onLogin: () => void
   onSignup: () => void
@@ -20,14 +18,6 @@ export interface HeaderProps {
   isLoggingOut: boolean
 }
 
-/**
- * The application header.
- *
- * Presentational on purpose: it receives the user and the callbacks rather than
- * calling `useAuth` itself. A generic component that reaches into a feature's
- * state cannot be reused or reasoned about independently, and this one is wired
- * once in `app/App.tsx`.
- */
 export function Header({
   user,
   isLoading,
@@ -65,11 +55,7 @@ export function Header({
         </Link>
 
         <nav className="header__nav" aria-label="Main">
-          {/*
-            Track Order stays visible when signed out: tracking is done with an
-            order id, so someone who received a delivery reference can use it
-            without an account.
-          */}
+
           <NavLink to={ROUTES.trackOrder} className={navClass}>
             Track order
           </NavLink>
@@ -80,8 +66,6 @@ export function Header({
             </NavLink>
           )}
 
-          {/* Render nothing until the session is known, rather than showing
-              "Login" to someone who turns out to be signed in. */}
           {isLoading ? (
             <span className="header__placeholder" aria-hidden="true" />
           ) : user ? (

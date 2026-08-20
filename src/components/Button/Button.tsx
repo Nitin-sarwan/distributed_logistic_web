@@ -10,14 +10,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg'
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
   size?: ButtonSize
-  /**
-   * Shows a spinner and disables the button.
-   *
-   * Disabling while in flight is what prevents a double submission — a second
-   * click on a login button would open a second session.
-   */
   isLoading?: boolean
-  /** Replaces the label while loading, e.g. "Logging in…". */
   loadingText?: string
   fullWidth?: boolean
   children: ReactNode
@@ -47,8 +40,7 @@ export function Button({
         className,
       )}
       disabled={disabled || isLoading}
-      // Tells assistive technology the control is busy rather than simply
-      // unresponsive.
+
       aria-busy={isLoading || undefined}
       {...rest}
     >

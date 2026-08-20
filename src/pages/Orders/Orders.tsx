@@ -1,6 +1,5 @@
 import { ComingSoon } from '@/pages/ComingSoon'
 
-/** Protected route. Order history belongs to a specific account. */
 export function Orders() {
   return (
     <ComingSoon

@@ -52,8 +52,6 @@
   font-size: 0.9375rem;
 }
 
-/* The wrapper already draws a focus ring; a second one on the inner input
-   would double up. */
 .field__input:focus {
   outline: none;
 }

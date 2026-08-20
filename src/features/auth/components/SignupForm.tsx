@@ -17,7 +17,6 @@ export interface SignupFormProps {
   onSwitchToLogin: () => void
 }
 
-/** Fields the backend can attribute an error to, for 409/422 mapping. */
 const MAPPABLE_FIELDS = new Set(['name', 'email', 'phone', 'password'])
 
 export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
@@ -41,20 +40,14 @@ export function SignupForm({ onSuccess, onSwitchToLogin }: SignupFormProps) {
       await signup({
         name: values.name.trim(),
         email: values.email.trim().toLowerCase(),
-        // Omit rather than send "": the backend's validator requires exactly
-        // 10 digits when the field is present.
         phone: values.phone.trim(),
         password: values.password,
       })
 
-      // Registration issues a session, so the user is already logged in. No
-      // "account created, now please sign in" step.
       onSuccess()
     } catch (error) {
       const apiError = error instanceof ApiError ? error : null
 
-      // 409 duplicates arrive with a field attached — mark the input rather
-      // than making the user guess which one clashed.
       if (apiError?.fieldErrors) {
         for (const [field, message] of Object.entries(apiError.fieldErrors)) {
           if (MAPPABLE_FIELDS.has(field)) {

@@ -13,19 +13,10 @@ export interface ProfileMenuProps {
   isLoggingOut: boolean
 }
 
-/**
- * The avatar dropdown.
- *
- * Account actions only — Profile, Saved addresses, Logout. Track Order and My
- * Orders stay in the primary navigation, where they are one click away rather
- * than hidden behind a menu a user has to know to open.
- */
 export function ProfileMenu({ user, onLogout, isLoggingOut }: ProfileMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Close on an outside click or Escape — the behaviour a dropdown is expected
-  // to have, and without it the menu can be left open behind a navigation.
   useEffect(() => {
     if (!isOpen) return
 

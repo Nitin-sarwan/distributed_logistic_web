@@ -1,10 +1,5 @@
 import { ComingSoon } from '@/pages/ComingSoon'
 
-/**
- * Public route: tracking is done with an order id, so someone who was sent a
- * delivery reference can use it without an account. That is why "Track order"
- * stays in the header when signed out.
- */
 export function TrackOrder() {
   return (
     <ComingSoon

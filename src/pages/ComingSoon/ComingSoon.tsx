@@ -10,23 +10,10 @@ import './ComingSoon.css'
 export interface ComingSoonProps {
   title: string
   subtitle: string
-  /** Which backend service will power this, so the placeholder is informative. */
   service: string
   description: string
 }
 
-/**
- * A destination for navigation that exists before its service does.
- *
- * Track Order and My Orders are primary navigation — the header shows them
- * because tracking and order history are core to a logistics platform, not
- * because the Order Service is ready. These pages give those links somewhere
- * honest to land.
- *
- * Deliberately inert: no API calls, no order types, no state. When the Order
- * Service arrives, `features/orders/` is built and the route swapped. Nothing
- * here is scaffolding that has to be unpicked first.
- */
 export function ComingSoon({ title, subtitle, service, description }: ComingSoonProps) {
   return (
     <div className="page container">

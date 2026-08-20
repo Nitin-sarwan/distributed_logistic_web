@@ -9,7 +9,7 @@ import { Input } from '@/components/Input'
 import { ROUTES } from '@/constants'
 import { ApiError } from '@/services'
 
-import { resetPassword } from '../api/authApi'
+import { resetPassword } from '../api'
 import { useAuth } from '../hooks/useAuth'
 import { useAuthModal } from '../hooks/useAuthModal'
 import {
@@ -21,16 +21,9 @@ import {
 import './AuthForm.css'
 
 export interface ResetPasswordFormProps {
-  /** Token from the reset link's query string. */
   token: string
 }
 
-/**
- * Set a new password using a reset token.
- *
- * This lives on its own route rather than in the modal because it is reached
- * from an emailed link, not from a header button.
- */
 export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   const navigate = useNavigate()
   const { clearSession } = useAuth()
@@ -53,8 +46,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     try {
       await resetPassword({ token: values.token, new_password: values.new_password })
       setDone(true)
-      // A reset revokes every session, on the assumption the old password may
-      // have been compromised.
+
       clearSession()
     } catch (error) {
       setFormError(
@@ -88,9 +80,6 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     <form className="auth-form" onSubmit={onSubmit} noValidate>
       {formError && <Alert tone="error">{formError}</Alert>}
 
-      {/* The token travels in a hidden field so it is submitted with the form
-          and validated alongside the passwords, rather than being read from the
-          URL again at submit time. */}
       <input type="hidden" {...register('token')} />
       {errors.token?.message && <Alert tone="error">{errors.token.message}</Alert>}
 

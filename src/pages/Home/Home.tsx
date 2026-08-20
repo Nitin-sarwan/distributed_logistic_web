@@ -1,10 +1,8 @@
 import { useAuth } from '@/features/auth'
-
-import { BookingWidget } from './BookingWidget'
+import { BookingWidget } from '@/features/booking'
 
 import './Home.css'
 
-/** Selling points. Static copy — no service backs these yet. */
 const HIGHLIGHTS = [
   {
     title: 'Two-wheeler to truck',
@@ -28,8 +26,7 @@ export function Home() {
       <section className="hero">
         <div className="hero__inner container">
           <div className="hero__copy">
-            {/* Signed in, the page speaks to the task rather than the pitch —
-                they have already been sold. */}
+
             {isAuthenticated && user ? (
               <>
                 <h1 className="hero__title">Where are you moving today?</h1>

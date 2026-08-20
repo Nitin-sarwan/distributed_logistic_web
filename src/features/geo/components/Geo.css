@@ -1,0 +1,113 @@
+.place-search__box {
+  position: relative;
+}
+
+.place-search__trailing {
+  display: flex;
+  align-items: center;
+  padding-right: var(--space-1);
+}
+
+.place-search__list {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.place-search__status {
+  padding: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: 14px;
+}
+
+.place-search__option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.place-search__option--active {
+  background: var(--color-brand-soft);
+}
+
+.place-search__option-main {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--color-text);
+}
+
+.place-search__option-context {
+  font-size: 13px;
+  color: var(--color-text-subtle);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-picker {
+  position: relative;
+}
+
+.location-picker__pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 500;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.location-picker__locate {
+  position: absolute;
+  z-index: 500;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.map-frame[data-map-style='dark'] .location-picker__locate {
+  background: #2a303c;
+  border-color: #3b4354;
+  color: #d5dae4;
+}
+
+.location-picker__readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.location-picker__address {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.location-picker__coords {
+  font-size: 13px;
+  color: var(--color-text-subtle);
+  font-variant-numeric: tabular-nums;
+}
+
+.location-picker__error {
+  margin-top: var(--space-2);
+  font-size: 13px;
+  color: var(--color-danger);
+}

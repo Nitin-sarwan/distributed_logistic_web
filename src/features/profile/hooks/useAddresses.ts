@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ApiError } from '@/services'
+import { ApiError, errorMessage } from '@/services'
 
 import * as addressApi from '../api/addressApi'
 import type {
@@ -9,23 +9,12 @@ import type {
   CreateAddressPayload,
 } from '../types'
 
-/**
- * Saved-address state and operations.
- *
- * All the fetching, error handling, and list bookkeeping lives here so the page
- * component stays presentational. No page in this app calls an API module
- * directly.
- */
 export interface UseAddressesResult {
   addresses: Address[]
-  /** True during the initial load only, so a refresh does not blank the list. */
   isLoading: boolean
-  /** A message fit to show a user, or null. */
   error: string | null
-  /** Set when the list could not load at all. Distinguishes "not built" from "broke". */
   unavailable: AddressUnavailableReason | null
   isCreating: boolean
-  /** Id currently being deleted, so only that row shows a spinner. */
   deletingId: number | null
   create: (payload: CreateAddressPayload) => Promise<void>
   remove: (id: number) => Promise<void>
@@ -61,18 +50,12 @@ export function useAddresses(): UseAddressesResult {
 
       const apiError = caught instanceof ApiError ? caught : null
 
-      // A 404 here means the route does not exist, not that the user has no
-      // addresses — an empty list would be a 200 with []. Saying "not built
-      // yet" points at the right layer instead of sending someone hunting for
-      // a frontend bug.
       if (apiError?.isNotFound) {
         setUnavailable('not-implemented')
         setAddresses([])
         return
       }
 
-      // A 401 is already handled globally: the response interceptor clears the
-      // credential and the auth store signs the user out. Nothing to add here.
       if (apiError?.isUnauthenticated) return
 
       setUnavailable('error')
@@ -93,8 +76,7 @@ export function useAddresses(): UseAddressesResult {
     try {
       const created = await addressApi.createAddress(payload)
       if (!isMounted.current) return
-      // Append the server's version rather than the submitted payload — it
-      // carries the generated id and any normalisation the backend applied.
+
       setAddresses((current) => [...current, created])
     } finally {
       if (isMounted.current) setIsCreating(false)
@@ -111,11 +93,8 @@ export function useAddresses(): UseAddressesResult {
       setAddresses((current) => current.filter((address) => address.id !== id))
     } catch (caught) {
       if (!isMounted.current) return
-      // Removed optimistically nowhere, so nothing to roll back — the list is
-      // still correct, only the message is new.
-      setError(
-        caught instanceof ApiError ? caught.message : 'Could not delete that address.',
-      )
+
+      setError(errorMessage(caught, 'Could not delete that address.'))
     } finally {
       if (isMounted.current) setDeletingId(null)
     }

@@ -7,7 +7,7 @@ import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
 import { ApiError } from '@/services'
 
-import { changePassword } from '../api/authApi'
+import { changePassword } from '../api'
 import { useAuth } from '../hooks/useAuth'
 import {
   JOI_OPTIONS,
@@ -17,13 +17,6 @@ import {
 
 import './AuthForm.css'
 
-/**
- * Change the password of a signed-in user.
- *
- * The current password is required as well as a live session — an unattended
- * signed-in browser must not be enough to take an account permanently. The
- * backend enforces this; the field here simply collects it.
- */
 export function ChangePasswordForm() {
   const { clearSession } = useAuth()
   const [formError, setFormError] = useState<string | null>(null)
@@ -49,14 +42,9 @@ export function ChangePasswordForm() {
         new_password: values.new_password,
       })
 
-      // Clear the form so the passwords do not sit in the DOM afterwards.
       reset()
       setDone(true)
 
-      // The backend revoked every session and rotated the token secret, so the
-      // credential this tab holds is already dead. Reflecting that immediately
-      // is more honest than leaving a signed-in shell that 401s on the next
-      // click.
       clearSession()
     } catch (error) {
       const apiError = error instanceof ApiError ? error : null

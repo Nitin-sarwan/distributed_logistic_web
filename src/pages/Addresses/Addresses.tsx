@@ -5,7 +5,6 @@ import { SavedAddresses } from '@/features/profile'
 
 import './Addresses.css'
 
-/** Route-level screen for saved addresses. All logic lives in the feature. */
 export function Addresses() {
   return (
     <div className="page container">

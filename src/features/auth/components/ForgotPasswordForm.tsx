@@ -8,7 +8,7 @@ import { Input } from '@/components/Input'
 import { ROUTES } from '@/constants'
 import { ApiError } from '@/services'
 
-import { forgotPassword } from '../api/authApi'
+import { forgotPassword } from '../api'
 import {
   JOI_OPTIONS,
   forgotPasswordSchema,
@@ -24,7 +24,7 @@ export interface ForgotPasswordFormProps {
 export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
   const [formError, setFormError] = useState<string | null>(null)
   const [sent, setSent] = useState(false)
-  /** Only ever populated in local development — see below. */
+
   const [devResetToken, setDevResetToken] = useState<string | null>(null)
 
   const {
@@ -42,9 +42,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
     try {
       const { resetToken } = await forgotPassword(values.email.trim().toLowerCase())
       setSent(true)
-      // The backend returns this only when PASSWORD_RESET_EXPOSE_TOKEN=true, a
-      // local-dev setting that must never be enabled anywhere real. Showing it
-      // is what makes the reset flow testable without mail delivery.
+
       if (resetToken) setDevResetToken(resetToken)
     } catch (error) {
       setFormError(
@@ -58,9 +56,7 @@ export function ForgotPasswordForm({ onBackToLogin }: ForgotPasswordFormProps) {
   if (sent) {
     return (
       <div className="auth-form">
-        {/* Deliberately does not confirm whether an account exists — the
-            backend answers identically either way so this endpoint cannot be
-            used to discover which addresses are registered. */}
+
         <Alert tone="success">
           If that email is registered, we&apos;ve sent a reset link to it. Check your
           inbox.

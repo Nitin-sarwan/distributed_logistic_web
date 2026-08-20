@@ -1,56 +1,36 @@
-/**
- * Design tokens and global baseline.
- *
- * Plain CSS with custom properties — no Tailwind, no CSS-in-JS. The project had
- * no styling setup to follow, so this adds zero dependencies while still giving
- * every component one vocabulary for colour, spacing, and elevation.
- */
-
 :root {
-  /* Brand — a deep indigo reads as logistics/infrastructure rather than retail. */
   --color-brand: #1f3a8a;
   --color-brand-strong: #16296b;
   --color-brand-soft: #eef2ff;
   --color-brand-border: #c7d2fe;
-
-  /* Accent for the primary CTA. High contrast against the indigo hero. */
   --color-accent: #f59e0b;
   --color-accent-strong: #d97706;
-
   --color-text: #0f172a;
   --color-text-muted: #56607a;
   --color-text-subtle: #7c869e;
   --color-text-inverse: #ffffff;
-
   --color-surface: #ffffff;
   --color-surface-alt: #f7f8fc;
   --color-surface-sunken: #eef0f6;
-
   --color-border: #e2e5ee;
   --color-border-strong: #ccd1de;
-
   --color-danger: #b42318;
   --color-danger-soft: #fef3f2;
   --color-danger-border: #fecdca;
-
   --color-success: #067647;
   --color-success-soft: #ecfdf3;
   --color-success-border: #abefc6;
-
   --color-info: #175cd3;
   --color-info-soft: #eff8ff;
   --color-info-border: #b2ddff;
-
   --color-warning: #b54708;
   --color-warning-soft: #fffaeb;
   --color-warning-border: #fedf89;
-
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
   --radius-full: 999px;
-
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -61,24 +41,17 @@
   --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
-
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
   --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.12);
   --shadow-xl: 0 24px 56px rgba(15, 23, 42, 0.18);
-
   --header-height: 64px;
   --content-max: 1140px;
-
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
-
   --focus-ring: 0 0 0 3px rgba(31, 58, 138, 0.22);
-
   color-scheme: light;
 }
-
-/* ── Reset ─────────────────────────────────────────────────────────────── */
 
 *,
 *::before,
@@ -138,14 +111,10 @@ a:hover {
   text-decoration: underline;
 }
 
-/* A visible focus ring is an accessibility requirement, not a style choice.
-   :focus-visible keeps it for keyboard users without ringing on mouse clicks. */
 :focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
-
-/* ── Layout primitives ─────────────────────────────────────────────────── */
 
 .container {
   width: 100%;
@@ -175,8 +144,6 @@ a:hover {
   gap: var(--space-4);
 }
 
-/* Visible to screen readers only — used for labels that would be redundant
-   on screen but are required for non-visual navigation. */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -189,7 +156,6 @@ a:hover {
   border: 0;
 }
 
-/* Respect a user's reduced-motion preference. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -5,12 +5,10 @@ import './EmptyState.css'
 export interface EmptyStateProps {
   title: string
   description?: string
-  /** A call to action, so an empty list is a starting point rather than a dead end. */
   action?: ReactNode
   icon?: ReactNode
 }
 
-/** Shown when a list has no items, or a feature is not available yet. */
 export function EmptyState({ title, description, action, icon }: EmptyStateProps) {
   return (
     <div className="empty">

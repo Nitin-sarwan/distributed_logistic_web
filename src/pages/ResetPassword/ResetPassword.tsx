@@ -6,12 +6,6 @@ import { ResetPasswordForm } from '@/features/auth'
 
 import './ResetPassword.css'
 
-/**
- * The destination of a password-reset link: `/reset-password?token=…`.
- *
- * A route rather than a modal, because it is reached from an email rather than
- * from a button inside the app.
- */
 export function ResetPassword() {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')

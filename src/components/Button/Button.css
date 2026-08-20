@@ -19,7 +19,6 @@
   opacity: 0.6;
 }
 
-/* Sizes */
 .btn--sm {
   padding: 6px 12px;
   font-size: 0.875rem;
@@ -39,7 +38,6 @@
   width: 100%;
 }
 
-/* Variants */
 .btn--primary {
   background: var(--color-brand);
   color: var(--color-text-inverse);
@@ -81,7 +79,6 @@
   background: var(--color-danger-soft);
 }
 
-/* Loading spinner */
 .btn__spinner {
   width: 1em;
   height: 1em;

@@ -9,18 +9,9 @@ import { ProfileDetails } from '@/features/profile'
 
 import './Profile.css'
 
-/**
- * The account page.
- *
- * A route-level screen and nothing more: it reads the user from auth state and
- * composes feature components. No API call is made here — that belongs to the
- * feature layer.
- */
 export function Profile() {
   const { user, isLoading, logout } = useAuth()
 
-  // RequireAuth has already resolved the session before this renders, so this
-  // is only for the brief window where the user object is still settling.
   if (isLoading || !user) {
     return <Loader fullPage label="Loading your profile…" />
   }
@@ -69,9 +60,7 @@ export function Profile() {
 
         <Card title="Session">
           <div className="profile-session">
-            {/* No email here: it is already in Account details above, and
-                repeating an identifier next to a destructive action adds
-                nothing but another place it can be read over a shoulder. */}
+
             <p className="profile-note">
               Sign out of LogisticPartner on this device.
             </p>

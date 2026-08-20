@@ -12,13 +12,6 @@ export interface AlertProps {
   className?: string
 }
 
-/**
- * A message banner for form-level and page-level feedback.
- *
- * Errors use `role="alert"`, which interrupts a screen reader immediately — a
- * failed login must not go unnoticed. Non-errors use a polite live region so
- * they are announced without cutting off whatever is being read.
- */
 export function Alert({ tone = 'error', children, className }: AlertProps) {
   return (
     <div

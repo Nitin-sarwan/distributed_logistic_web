@@ -1,0 +1,98 @@
+.booking-card {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-xl);
+}
+
+.booking-card__title {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-5);
+}
+
+.booking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.booking__locations {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+}
+
+.booking__route {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: 46px 22px;
+}
+
+.booking__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.booking__dot--pickup {
+  background: var(--color-success);
+}
+
+.booking__dot--drop {
+  background: var(--color-accent);
+}
+
+.booking__line {
+  flex: 1;
+  width: 2px;
+  margin-block: 4px;
+  background: var(--color-border-strong);
+}
+
+.booking__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.booking__map {
+  margin-top: calc(-1 * var(--space-1));
+}
+
+.booking__distance {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.booking__distance-note {
+  font-weight: 400;
+  color: var(--color-text-subtle);
+}
+
+.booking__locate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--color-brand);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.booking__locate:hover:not(:disabled) {
+  background: var(--color-brand-soft);
+}
+
+.booking__locate:disabled {
+  color: var(--color-text-subtle);
+  cursor: default;
+}

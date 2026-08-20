@@ -69,7 +69,6 @@
   overflow-y: auto;
 }
 
-/* Header absent: the body provides the top padding instead. */
 .modal__header + .modal__body {
   padding-top: var(--space-5);
 }
@@ -78,7 +77,6 @@
   .modal__header {
     padding: var(--space-5) var(--space-5) 0;
   }
-
   .modal__body {
     padding: var(--space-4) var(--space-5) var(--space-5);
   }

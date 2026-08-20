@@ -9,8 +9,6 @@
   color: var(--color-text-muted);
 }
 
-/* A link rendered as a button: it performs an in-page action rather than
-   navigating, so <a> would be wrong semantically. */
 .auth-form__link-btn {
   align-self: flex-start;
   margin-top: calc(var(--space-2) * -1);
