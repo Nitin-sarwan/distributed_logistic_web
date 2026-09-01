@@ -31,7 +31,13 @@ export { VehicleEditForm } from './components/VehicleEditForm'
 export { VehicleTypeSelect } from './components/VehicleTypeSelect'
 export { VehicleSections } from './components/VehicleSections'
 export { DeliveryCard } from './components/DeliveryCard'
-export type { Delivery, DeliveryStatus } from './components/DeliveryCard'
+export { DeliveryList } from './components/DeliveryList'
+export { useDeliveries } from './hooks/useDeliveries'
+export {
+  getDeliveries,
+  markDelivered,
+  markPickedUp,
+} from './api/deliveryApi'
 export { PartnerStatusPill, VehicleStatusPill } from './components/StatusPill'
 
 export { PartnerLogin } from './pages/PartnerLogin'

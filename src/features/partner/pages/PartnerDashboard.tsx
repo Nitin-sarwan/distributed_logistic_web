@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 import { Alert } from '@/components/Alert'
 import { Button } from '@/components/Button'
 import { Card } from '@/components/Card'
-import { EmptyState } from '@/components/EmptyState'
 import { ROUTES } from '@/constants'
 
 import { AvailabilityToggle } from '../components/AvailabilityToggle'
+import { DeliveryList } from '../components/DeliveryList'
 import { LocationCard } from '../components/LocationCard'
 import { usePartner } from '../hooks/usePartner'
 import { useVehicles } from '../hooks/useVehicles'
@@ -105,10 +105,9 @@ export function PartnerDashboard() {
           </Link>
         }
       >
-
-        <EmptyState
-          title="No deliveries yet"
-          description={
+        <DeliveryList
+          emptyTitle="No deliveries yet"
+          emptyDescription={
             partner.status === 'online'
               ? 'You are online. New deliveries will show up here as they are assigned to you.'
               : 'Go online to start receiving deliveries.'

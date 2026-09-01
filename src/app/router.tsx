@@ -15,6 +15,7 @@ import {
 import { Addresses } from '@/pages/Addresses'
 import { Home } from '@/pages/Home'
 import { NotFound } from '@/pages/NotFound'
+import { OrderDetail } from '@/pages/OrderDetail'
 import { Orders } from '@/pages/Orders'
 import { Profile } from '@/pages/Profile'
 import { ResetPassword } from '@/pages/ResetPassword'
@@ -36,6 +37,7 @@ export function AppRouter() {
         }
       >
         <Route path={ROUTES.orders} element={<Orders />} />
+        <Route path={ROUTES.orderDetail} element={<OrderDetail />} />
         <Route path={ROUTES.profile} element={<Profile />} />
         <Route path={ROUTES.addresses} element={<Addresses />} />
         <Route path={ROUTES.security} element={<Security />} />

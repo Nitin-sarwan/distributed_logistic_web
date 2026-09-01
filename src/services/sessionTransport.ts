@@ -5,10 +5,11 @@ export type SessionAudience = 'user' | 'partner'
 export const AUTH_TRANSPORT: AuthTransport =
   import.meta.env.VITE_AUTH_TRANSPORT === 'bearer' ? 'bearer' : 'cookie'
 
-const PARTNER_PREFIX = '/api/partners'
+const PARTNER_PREFIXES = ['/api/partners', '/api/deliveries']
 
 export function audienceForPath(url: string | undefined): SessionAudience {
-  return url?.startsWith(PARTNER_PREFIX) ? 'partner' : 'user'
+  if (!url) return 'user'
+  return PARTNER_PREFIXES.some((prefix) => url.startsWith(prefix)) ? 'partner' : 'user'
 }
 
 const sessionTokens: Record<SessionAudience, string | null> = {

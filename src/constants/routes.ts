@@ -2,6 +2,7 @@ export const ROUTES = {
   home: '/',
   trackOrder: '/track',
   orders: '/orders',
+  orderDetail: '/orders/:orderId',
   profile: '/profile',
   addresses: '/profile/addresses',
   security: '/profile/security',
@@ -13,6 +14,8 @@ export const ROUTES = {
   partnerVehicle: '/partner/vehicle',
   partnerProfile: '/partner/profile',
 } as const
+
+export const orderPath = (id: number | string): string => `/orders/${id}`
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES]
 

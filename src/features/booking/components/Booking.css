@@ -96,3 +96,35 @@
   color: var(--color-text-subtle);
   cursor: default;
 }
+
+.booking-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.booking-details__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.booking-details__note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.booking-details__actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.booking-details__actions .btn {
+  flex: 1;
+}
+
+@media (max-width: 560px) {
+  .booking-details__row {
+    grid-template-columns: 1fr;
+  }
+}

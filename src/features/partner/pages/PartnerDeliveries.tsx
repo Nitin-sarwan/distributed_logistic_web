@@ -1,7 +1,6 @@
-import { Alert } from '@/components/Alert'
 import { Card } from '@/components/Card'
-import { EmptyState } from '@/components/EmptyState'
 
+import { DeliveryList } from '../components/DeliveryList'
 import { usePartner } from '../hooks/usePartner'
 
 import '../components/PartnerUI.css'
@@ -20,23 +19,21 @@ export function PartnerDeliveries() {
         </p>
       </div>
 
-      <Alert tone="info">
-        <strong>Deliveries are not live yet.</strong> Assigning work needs the dispatch
-        service, which is still being built. Your availability and vehicle details are
-        already being recorded, so you will start receiving deliveries as soon as it is
-        switched on.
-      </Alert>
+      <Card
+        title="In progress"
+        description="Mark each step as you go — the customer sees it immediately."
+      >
+        <DeliveryList
+          emptyTitle="Nothing assigned right now"
+          emptyDescription="Go online and keep your location fresh. New deliveries appear here as dispatch assigns them."
+        />
+      </Card>
 
-      <Card title="Assigned to you">
-        <EmptyState
-          title="No deliveries"
-          description={
-            partner.status === 'online'
-              ? 'You are online. Anything assigned to you will appear here.'
-              : partner.status === 'on_trip'
-                ? 'You are marked as on a delivery. Details will appear here once dispatch is live.'
-                : 'Go online from the dashboard to start receiving deliveries.'
-          }
+      <Card title="Completed">
+        <DeliveryList
+          completed
+          emptyTitle="No completed deliveries yet"
+          emptyDescription="Deliveries you have handed over will be listed here."
         />
       </Card>
     </div>
