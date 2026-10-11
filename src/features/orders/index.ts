@@ -8,11 +8,14 @@ export { PartnerPanel } from './components/PartnerPanel'
 
 export { useOrder } from './hooks/useOrder'
 export { useOrders } from './hooks/useOrders'
+export { isTrackable, useOrderTracking } from './hooks/useOrderTracking'
 
 export { cancelOrder, confirmOrder, createOrder, getOrder, getOrders } from './api/orderApi'
 
 export {
+  findByRef,
   formatFare,
+  paymentLabel,
   isCancellable,
   isLive,
   needsConfirmation,
@@ -29,4 +32,7 @@ export type {
   OrderEndpointPayload,
   OrderStatus,
   OrderStatusEntry,
+  OrderTracking,
+  PaymentMethod,
+  PaymentStatus,
 } from './types'

@@ -5,6 +5,7 @@ import { useIsMounted } from '@/hooks'
 import { ApiError, errorMessage, isSessionEnded } from '@/services'
 
 import * as deliveryApi from '../api/deliveryApi'
+import { notifyDeliveriesChanged, onDeliveriesChanged } from './deliveriesChannel'
 
 const POLL_INTERVAL_MS = 20_000
 
@@ -48,6 +49,8 @@ export function useDeliveries(completed = false): UseDeliveriesResult {
     void load()
   }, [load])
 
+  useEffect(() => onDeliveriesChanged(() => void load()), [load])
+
   useEffect(() => {
     if (completed) return
 
@@ -62,7 +65,9 @@ export function useDeliveries(completed = false): UseDeliveriesResult {
 
       try {
         await action()
-        await load()
+        // Reloads this list and the other one: delivered moves a card from
+        // "In progress" to "Completed".
+        notifyDeliveriesChanged()
       } catch (caught) {
         if (!isMounted.current) return
         setError(errorMessage(caught, fallback))

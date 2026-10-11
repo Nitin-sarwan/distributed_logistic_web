@@ -1,7 +1,7 @@
 import { API_ROUTES } from '@/constants'
 import { get, post } from '@/services'
 
-import type { CreateOrderPayload, Order, OrderStatusEntry } from '../types'
+import type { CreateOrderPayload, Order, OrderStatusEntry, OrderTracking } from '../types'
 
 export function getOrders(limit = 20, offset = 0): Promise<Order[]> {
   return get<Order[]>(API_ROUTES.orders.list, { params: { limit, offset } })
@@ -13,6 +13,10 @@ export function getOrder(id: number): Promise<Order> {
 
 export function getOrderHistory(id: number): Promise<OrderStatusEntry[]> {
   return get<OrderStatusEntry[]>(API_ROUTES.orders.history(id))
+}
+
+export function getOrderTracking(id: number): Promise<OrderTracking> {
+  return get<OrderTracking>(API_ROUTES.orders.tracking(id))
 }
 
 export function createOrder(

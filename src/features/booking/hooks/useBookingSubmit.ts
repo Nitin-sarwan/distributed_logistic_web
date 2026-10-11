@@ -7,7 +7,7 @@ import { createOrder, type AddressPayload, type OrderEndpointPayload } from '@/f
 import { errorMessage } from '@/services'
 import type { User } from '@/types'
 
-import type { BookingDetails } from '../types'
+import { isValidPin, type BookingDetails } from '../types'
 
 export interface UseBookingSubmitResult {
   submit: (details: BookingDetails) => Promise<void>
@@ -20,7 +20,9 @@ function toAddress(place: Place, contact: { name: string; phone: string }): Addr
     address_line1: place.address_line1,
     address_line2: place.address_line2,
     city: place.city || 'Unknown',
-    pin_code: place.pin_code ?? '',
+    // Only when the map gave a real one. Many places have none, and the
+    // customer is never asked to type it.
+    pin_code: isValidPin(place.pin_code) ? place.pin_code : null,
     latitude: place.latitude,
     longitude: place.longitude,
     contact_name: contact.name,
@@ -43,7 +45,9 @@ export function useBookingSubmit(user: User | null): UseBookingSubmitResult {
       setError(null)
 
       const contact = { name: user.name, phone: user.phone }
-      const pickup: OrderEndpointPayload = { address: toAddress(details.pickup, contact) }
+      const pickup: OrderEndpointPayload = {
+        address: toAddress(details.pickup, contact),
+      }
       const drop: OrderEndpointPayload = {
         address: toAddress(details.drop, {
           name: details.dropContactName || user.name,
@@ -58,6 +62,7 @@ export function useBookingSubmit(user: User | null): UseBookingSubmitResult {
             drop,
             vehicle_type: details.vehicleType,
             weight_kg: details.weightKg,
+            payment_method: details.paymentMethod,
             description: details.description || null,
           },
           idempotencyKey.current,

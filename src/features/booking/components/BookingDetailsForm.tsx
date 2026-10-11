@@ -27,6 +27,7 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
   const [description, setDescription] = useState('')
   const [dropContactName, setDropContactName] = useState('')
   const [dropContactPhone, setDropContactPhone] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState<'online' | 'on_delivery'>('on_delivery')
 
   const weight = Number(weightKg)
   const fares = useFareEstimate({ pickup, drop }, weight)
@@ -48,7 +49,8 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
 
   // An overweight choice is already explained by weightError; this catches a
   // vehicle operations have switched off.
-  const canSubmit = !weightError && !phoneError && weight > 0 && chosen?.available !== false
+  const canSubmit =
+    !weightError && !phoneError && weight > 0 && chosen?.available !== false
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
@@ -62,6 +64,7 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
       description,
       dropContactName,
       dropContactPhone,
+      paymentMethod,
     })
   }
 
@@ -116,6 +119,36 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
       <p className="booking-details__note">
         Leave the recipient blank and we will use your own details.
       </p>
+
+      <fieldset className="pay-method">
+        <legend className="field__label">Payment</legend>
+        <label className={paymentMethod === 'on_delivery' ? 'pay-method__option pay-method__option--on' : 'pay-method__option'}>
+          <input
+            type="radio"
+            name="payment-method"
+            value="on_delivery"
+            checked={paymentMethod === 'on_delivery'}
+            onChange={() => setPaymentMethod('on_delivery')}
+          />
+          <span>
+            <span className="pay-method__name">Pay on delivery</span>
+            <span className="pay-method__hint">Cash or UPI to the driver at drop-off</span>
+          </span>
+        </label>
+        <label className={paymentMethod === 'online' ? 'pay-method__option pay-method__option--on' : 'pay-method__option'}>
+          <input
+            type="radio"
+            name="payment-method"
+            value="online"
+            checked={paymentMethod === 'online'}
+            onChange={() => setPaymentMethod('online')}
+          />
+          <span>
+            <span className="pay-method__name">Pay online now</span>
+            <span className="pay-method__hint">Test mode: no money is taken yet</span>
+          </span>
+        </label>
+      </fieldset>
 
       <div className="booking-details__actions">
         <Button variant="secondary" onClick={onCancel} disabled={isSubmitting}>

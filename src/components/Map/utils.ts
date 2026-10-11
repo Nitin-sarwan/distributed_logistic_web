@@ -28,6 +28,26 @@ export function pinIcon(tone: MapMarkerTone = 'default'): L.DivIcon {
   })
 }
 
+const BADGE_SIZE = 40
+
+/** A round badge with a symbol in it, centred on the point it marks. */
+export function badgeIcon(symbol: string, tone: MapMarkerTone = 'default'): L.DivIcon {
+  return L.divIcon({
+    className: 'map-pin-wrapper',
+    html:
+      `<span class="map-badge map-badge--${tone}">` +
+      `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" ` +
+      `stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">` +
+      `${symbol}</svg></span>`,
+    iconSize: [BADGE_SIZE, BADGE_SIZE],
+    iconAnchor: [BADGE_SIZE / 2, BADGE_SIZE / 2],
+  })
+}
+
+export function markerIcon(marker: { tone?: MapMarkerTone; symbol?: string }): L.DivIcon {
+  return marker.symbol ? badgeIcon(marker.symbol, marker.tone) : pinIcon(marker.tone)
+}
+
 export function parseCenter(value: string | undefined): LatLng | null {
   if (!value) return null
 

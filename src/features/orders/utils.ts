@@ -61,6 +61,22 @@ export function formatFare(order: Pick<Order, 'quoted_amount' | 'currency'>): st
   }).format(amount)
 }
 
+/** "lp-7zqnr5", "7ZQNR5" and "LP-7ZQNR5" all find LP-7ZQNR5. */
+export function findByRef<T extends Pick<Order, 'public_ref'>>(orders: T[], reference: string): T | null {
+  const wanted = reference.trim().toUpperCase().replace(/^LP-?/, '')
+  if (!wanted) return null
+  return orders.find((order) => order.public_ref.toUpperCase().replace(/^LP-?/, '') === wanted) ?? null
+}
+
+/** "Paid online", "Pay on delivery · due", "Refunded" — one phrase for both apps. */
+export function paymentLabel(order: Pick<Order, 'payment_method' | 'payment_status'>): string {
+  if (order.payment_status === 'refunded') return 'Refunded'
+  if (order.payment_method === 'online') {
+    return order.payment_status === 'paid' ? 'Paid online' : 'Online · pending'
+  }
+  return order.payment_status === 'paid' ? 'Paid on delivery' : 'Pay on delivery · due'
+}
+
 export function shortAddress(snapshot: { line1: string; city: string }): string {
   return [snapshot.line1, snapshot.city].filter(Boolean).join(', ')
 }

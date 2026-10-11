@@ -2,6 +2,8 @@ import { Button } from '@/components/Button'
 import { OrderStatusPill, formatFare, type Order } from '@/features/orders'
 import { formatPhone } from '@/utils'
 
+import { DeliveryPayment } from './DeliveryPayment'
+
 import './PartnerUI.css'
 
 export interface DeliveryCardProps {
@@ -55,6 +57,8 @@ export function DeliveryCard({ delivery, isBusy, onPickUp, onDeliver }: Delivery
       {delivery.package_description && (
         <p className="delivery__note">{delivery.package_description}</p>
       )}
+
+      <DeliveryPayment delivery={delivery} />
 
       <div className="delivery__actions">
         <a className="delivery__call" href={`tel:${contact.contact_phone}`}>
