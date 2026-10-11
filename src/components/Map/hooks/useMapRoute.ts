@@ -18,10 +18,11 @@ export function useMapRoute(
     lineRef.current?.remove()
     lineRef.current = null
 
-    if (!enabled || markers.length < 2) return
+    const stops = markers.filter((marker) => marker.route !== false)
+    if (!enabled || stops.length < 2) return
 
     lineRef.current = L.polyline(
-      markers.map((marker) => toLeaflet(marker.position)),
+      stops.map((marker) => toLeaflet(marker.position)),
       { className: 'map-route', dashArray: '6 8', weight: 3 },
     ).addTo(map)
 

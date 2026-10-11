@@ -5,11 +5,18 @@ import { Loader } from '@/components/Loader'
 import { ROUTES } from '@/constants'
 import { OfferPanel, useCurrentOffer } from '@/features/dispatch'
 
+import {
+  notifyDeliveriesChanged,
+  refreshDeliveriesAfterAccept,
+} from '../hooks/deliveriesChannel'
 import { usePartner } from '../hooks/usePartner'
 import { PartnerHeader } from './PartnerHeader'
 import { PartnerSidebar } from './PartnerSidebar'
 
 import './PartnerLayout.css'
+
+// How quickly a driver who was released (cancelled or delivered) is noticed.
+const ON_TRIP_REFRESH_MS = 8_000
 
 export function PartnerLayout() {
   const { partner, logout, refreshPartner } = usePartner()
@@ -20,8 +27,23 @@ export function PartnerLayout() {
   // availability toggle need the fresh partner, and the job is on Deliveries.
   const handleAccepted = useCallback(() => {
     void refreshPartner()
+    refreshDeliveriesAfterAccept()
     navigate(ROUTES.partnerDeliveries)
   }, [navigate, refreshPartner])
+
+  // Dispatch hands the driver back (on_trip -> online) when the delivery ends
+  // or the customer cancels, and nothing tells this screen. Re-read the
+  // partner while they are on a trip, or a released driver keeps "On a
+  // delivery" on screen and - worse - never polls for the next offer.
+  const isOnTrip = partner?.status === 'on_trip'
+  useEffect(() => {
+    if (!isOnTrip) return
+    const timer = window.setInterval(() => {
+      void refreshPartner()
+      notifyDeliveriesChanged()
+    }, ON_TRIP_REFRESH_MS)
+    return () => window.clearInterval(timer)
+  }, [isOnTrip, refreshPartner])
 
   // Only an online driver can be offered work; polling anyone else is noise.
   const offer = useCurrentOffer(partner?.status === 'online', handleAccepted)

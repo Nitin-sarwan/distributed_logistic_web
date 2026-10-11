@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import type { MapMarker } from '@/components/Map'
-import { distanceKm, useDeviceLocation, type Place } from '@/features/geo'
+import { distanceKm, reverseGeocode, useDeviceLocation, type Place } from '@/features/geo'
 
 import { EMPTY_ENDPOINT, type Endpoint } from '../types'
 
@@ -40,18 +40,31 @@ export function useBooking(): UseBookingResult {
     const position = await request()
     if (!position) return
 
-    setPickup({
-      text: 'My current location',
-      place: {
-        ...position,
-        label: 'My current location',
-        address_line1: 'My current location',
-        address_line2: null,
-        city: '',
-        pin_code: null,
-        place_id: 'device-location',
-      },
-    })
+    const fallback: Place = {
+      ...position,
+      label: 'My current location',
+      address_line1: 'My current location',
+      address_line2: null,
+      city: '',
+      pin_code: null,
+      place_id: 'device-location',
+    }
+    setPickup({ text: fallback.label, place: fallback })
+
+    // Look up what is actually here, so the order snapshots a street, a city
+    // and a PIN code rather than "My current location". Keep the device's own
+    // coordinates: they are more precise than the address's.
+    try {
+      const { place } = await reverseGeocode(position)
+      if (!place) return
+      setPickup((current) =>
+        current.place?.place_id === 'device-location'
+          ? { text: place.label, place: { ...place, ...position } }
+          : current,
+      )
+    } catch {
+      // The fallback stands; the booking form asks for the PIN code.
+    }
   }, [request])
 
   return {

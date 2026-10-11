@@ -15,12 +15,14 @@ import {
   isCancellable,
   needsConfirmation,
   useOrder,
+  useOrderTracking,
 } from '@/features/orders'
 
 export function OrderDetail() {
   const { orderId } = useParams<{ orderId: string }>()
   const id = Number(orderId)
   const { order, history, isLoading, error, isWorking, confirm, cancel } = useOrder(id)
+  const tracking = useOrderTracking(id, order?.status)
 
   if (isLoading && !order) return <Loader fullPage label="Loading your delivery…" />
 
@@ -64,7 +66,7 @@ export function OrderDetail() {
             <OrderSummary order={order} />
           </Card>
 
-          <PartnerPanel order={order} />
+          <PartnerPanel order={order} tracking={tracking} />
 
           <div className="order-actions">
             {isCancellable(order.status) && (
@@ -90,7 +92,7 @@ export function OrderDetail() {
         </div>
 
         <div className="order-detail__aside">
-          <OrderMap order={order} height={260} />
+          <OrderMap order={order} tracking={tracking} height={260} />
           <Card title="Progress">
             <OrderTimeline entries={history} />
           </Card>

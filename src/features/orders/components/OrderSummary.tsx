@@ -1,7 +1,7 @@
 import { formatDistance } from '@/features/geo'
 
 import type { Order } from '../types'
-import { formatFare } from '../utils'
+import { formatFare, paymentLabel } from '../utils'
 
 import './Orders.css'
 
@@ -23,6 +23,21 @@ export function OrderSummary({ order }: { order: Order }) {
       <div>
         <dt>Weight</dt>
         <dd>{order.package_weight_kg} kg</dd>
+      </div>
+      <div>
+        <dt>Payment</dt>
+        <dd
+          className={
+            'order-facts__payment ' +
+            (order.payment_status === 'paid'
+              ? 'order-facts__paid'
+              : order.payment_status === 'pending' && order.payment_method === 'on_delivery'
+                ? 'order-facts__due'
+                : '')
+          }
+        >
+          {paymentLabel(order)}
+        </dd>
       </div>
     </dl>
   )

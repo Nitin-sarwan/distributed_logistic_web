@@ -204,9 +204,45 @@
   background: var(--color-border-strong);
 }
 
+/* Finished steps, and the line leading on from them. */
+.order-timeline__item--done .order-timeline__dot {
+  background: var(--color-success);
+}
+
+.order-timeline__item--done:not(:last-child)::before {
+  background: var(--color-success);
+}
+
+/* The latest step, coloured by what it means. */
 .order-timeline__item--current .order-timeline__dot {
+  width: 12px;
+  height: 12px;
+  margin-top: 4px;
+  margin-left: -1px;
+}
+
+.order-timeline__item--current.order-timeline__item--progress .order-timeline__dot,
+.order-timeline__item--current.order-timeline__item--neutral .order-timeline__dot {
   background: var(--color-brand);
   box-shadow: 0 0 0 4px var(--color-brand-soft);
+}
+
+.order-timeline__item--current.order-timeline__item--success .order-timeline__dot {
+  background: var(--color-success);
+  box-shadow: 0 0 0 4px var(--color-success-soft);
+}
+
+.order-timeline__item--current.order-timeline__item--danger .order-timeline__dot {
+  background: var(--color-danger);
+  box-shadow: 0 0 0 4px var(--color-danger-soft);
+}
+
+.order-timeline__item--current.order-timeline__item--success .order-timeline__label {
+  color: var(--color-success);
+}
+
+.order-timeline__item--current.order-timeline__item--danger .order-timeline__label {
+  color: var(--color-danger);
 }
 
 .order-timeline__label {
@@ -282,4 +318,48 @@
   .order-detail {
     grid-template-columns: 1fr;
   }
+}
+
+/* The live line under the driver's name: green while their phone is reporting,
+   amber once it has gone quiet. */
+.order-partner__live {
+  margin-top: var(--space-1);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+.order-partner__live::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+  vertical-align: 1px;
+}
+
+.order-partner__live--stale {
+  color: var(--color-warning);
+}
+
+.order-partner__note {
+  margin-top: var(--space-1);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.order-facts__paid {
+  color: var(--color-success);
+}
+
+.order-facts__due {
+  color: var(--color-warning);
+}
+
+/* The facts list capitalises every word ("Two Wheeler"); the payment label is
+   a phrase, and reads wrong that way ("Pay On Delivery · Due"). */
+.order-facts dd.order-facts__payment {
+  text-transform: none;
 }

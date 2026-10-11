@@ -2,7 +2,7 @@ import { useEffect, useRef, type RefObject } from 'react'
 import L from 'leaflet'
 
 import type { MapMarker } from '../types'
-import { fromLeaflet, pinIcon, toLeaflet } from '../utils'
+import { fromLeaflet, markerIcon, toLeaflet } from '../utils'
 
 export function useMapMarkers(
   mapRef: RefObject<L.Map | null>,
@@ -36,7 +36,7 @@ export function useMapMarkers(
 
 function create(map: L.Map, marker: MapMarker): L.Marker {
   return L.marker(toLeaflet(marker.position), {
-    icon: pinIcon(marker.tone),
+    icon: markerIcon(marker),
     draggable: marker.draggable ?? false,
     keyboard: false,
     title: marker.label,
@@ -46,7 +46,7 @@ function create(map: L.Map, marker: MapMarker): L.Marker {
 
 function apply(instance: L.Marker, marker: MapMarker): void {
   instance.setLatLng(toLeaflet(marker.position))
-  instance.setIcon(pinIcon(marker.tone))
+  instance.setIcon(markerIcon(marker))
 
   const draggable = marker.draggable ?? false
   instance.options.draggable = draggable

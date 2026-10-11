@@ -36,4 +36,10 @@ export interface BookingDetails {
   description: string
   dropContactName: string
   dropContactPhone: string
+  paymentMethod: 'online' | 'on_delivery'
 }
+
+const PIN_PATTERN = /^\d{6}$/
+
+export const isValidPin = (value: string | null | undefined): value is string =>
+  !!value && PIN_PATTERN.test(value)

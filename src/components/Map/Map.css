@@ -229,3 +229,39 @@
   stroke: #8fa6ff;
   opacity: 0.9;
 }
+
+/* A marker that shows what is there rather than just where: a round badge
+   with a symbol, centred on the point. */
+.map-badge {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  color: #ffffff;
+  border: 3px solid #ffffff;
+  box-shadow: var(--shadow-md);
+  transition: background 0.2s ease;
+}
+
+.map-badge--partner {
+  background: var(--color-info);
+}
+
+.map-badge--pickup {
+  background: var(--color-success);
+}
+
+.map-badge--drop {
+  background: var(--color-accent);
+}
+
+/* Muted: used for something the map can no longer vouch for. */
+.map-badge--default {
+  background: var(--color-text-subtle);
+}
+
+.map-frame[data-map-style='dark'] .map-badge {
+  border-color: #14181f;
+}

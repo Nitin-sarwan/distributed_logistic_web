@@ -49,7 +49,7 @@ export function PartnerVehicle() {
       {vehicles.vehicles.length === 0 ? (
         <EmptyState
           title="No vehicle added yet"
-          description="Add the vehicle you drive. Our team verifies it before you can go online."
+          description="Add the vehicle you drive. Dispatch uses it to match deliveries you can carry."
           action={<Button onClick={() => setEditing('new')}>Add vehicle</Button>}
         />
       ) : (
