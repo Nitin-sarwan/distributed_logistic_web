@@ -5,7 +5,8 @@ export type SessionAudience = 'user' | 'partner'
 export const AUTH_TRANSPORT: AuthTransport =
   import.meta.env.VITE_AUTH_TRANSPORT === 'bearer' ? 'bearer' : 'cookie'
 
-const PARTNER_PREFIXES = ['/api/partners', '/api/deliveries']
+// /api/deliveries also covers /api/deliveries/notifications, the driver's feed.
+const PARTNER_PREFIXES = ['/api/partners', '/api/deliveries', '/api/dispatch']
 
 export function audienceForPath(url: string | undefined): SessionAudience {
   if (!url) return 'user'

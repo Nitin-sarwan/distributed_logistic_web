@@ -7,6 +7,7 @@ import {
   PartnerDeliveries,
   PartnerLayout,
   PartnerLogin,
+  PartnerNotifications,
   PartnerProfile,
   PartnerSignup,
   PartnerVehicle,
@@ -15,6 +16,7 @@ import {
 import { Addresses } from '@/pages/Addresses'
 import { Home } from '@/pages/Home'
 import { NotFound } from '@/pages/NotFound'
+import { Notifications } from '@/pages/Notifications'
 import { OrderDetail } from '@/pages/OrderDetail'
 import { Orders } from '@/pages/Orders'
 import { Profile } from '@/pages/Profile'
@@ -41,6 +43,7 @@ export function AppRouter() {
         <Route path={ROUTES.profile} element={<Profile />} />
         <Route path={ROUTES.addresses} element={<Addresses />} />
         <Route path={ROUTES.security} element={<Security />} />
+        <Route path={ROUTES.notifications} element={<Notifications />} />
       </Route>
       <Route path={ROUTES.partnerLogin} element={<PartnerLogin />} />
       <Route path={ROUTES.partnerSignup} element={<PartnerSignup />} />
@@ -56,6 +59,7 @@ export function AppRouter() {
         <Route path="deliveries" element={<PartnerDeliveries />} />
         <Route path="vehicle" element={<PartnerVehicle />} />
         <Route path="profile" element={<PartnerProfile />} />
+        <Route path="notifications" element={<PartnerNotifications />} />
       </Route>
 
       <Route path="/login" element={<Navigate to={ROUTES.home} replace />} />

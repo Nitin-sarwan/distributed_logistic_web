@@ -1,0 +1,126 @@
+.fare-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+  transition: opacity 0.15s ease;
+}
+
+.fare-options--stale {
+  opacity: 0.6;
+}
+
+.fare-options__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.fare-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.fare-option:hover {
+  border-color: var(--color-border-strong);
+}
+
+.fare-option--selected {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  box-shadow: 0 0 0 1px var(--color-brand);
+}
+
+.fare-option--unavailable {
+  background: var(--color-surface-alt);
+  color: var(--color-text-subtle);
+}
+
+.fare-option--unavailable .fare-option__price {
+  text-decoration: line-through;
+}
+
+.fare-option--unavailable.fare-option--selected {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 1px var(--color-danger);
+  background: var(--color-danger-soft);
+}
+
+.fare-option__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fare-option:has(.fare-option__input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.fare-option__name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.fare-option__price {
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fare-option__meta {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.fare-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  font-size: 0.8125rem;
+}
+
+.fare-breakdown div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.fare-breakdown dt {
+  color: var(--color-text-muted);
+}
+
+.fare-breakdown dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.fare-options__note,
+.fare-options__status {
+  font-size: 0.75rem;
+  color: var(--color-text-subtle);
+}
+
+.fare-teaser {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.fare-teaser strong {
+  color: var(--color-text);
+}

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/Button'
 import { ROUTES } from '@/constants'
+import { NotificationBell } from '@/features/notifications'
 import { initials } from '@/utils'
 
 import type { Partner } from '../types'
@@ -70,6 +71,12 @@ export function PartnerHeader({
 
         <div className="partner-header__right">
           <PartnerStatusPill status={partner.status} />
+
+          <NotificationBell
+            audience="partner"
+            to={ROUTES.partnerNotifications}
+            variant="onBrand"
+          />
 
           <Link to={ROUTES.partnerProfile} className="partner-header__identity">
             <span className="partner-header__avatar" aria-hidden="true">

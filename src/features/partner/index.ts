@@ -46,6 +46,7 @@ export { PartnerDashboard } from './pages/PartnerDashboard'
 export { PartnerVehicle } from './pages/PartnerVehicle'
 export { PartnerProfile } from './pages/PartnerProfile'
 export { PartnerDeliveries } from './pages/PartnerDeliveries'
+export { PartnerNotifications } from './pages/PartnerNotifications'
 
 export type {
   Partner,
