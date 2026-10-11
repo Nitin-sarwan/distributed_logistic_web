@@ -4,6 +4,7 @@ import { Alert } from '@/components/Alert'
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
 import type { Place } from '@/features/geo'
+import { FareOptions, useFareEstimate } from '@/features/pricing'
 import type { User } from '@/types'
 
 import { useBookingSubmit } from '../hooks/useBookingSubmit'
@@ -18,8 +19,6 @@ export interface BookingDetailsFormProps {
   onCancel: () => void
 }
 
-const VEHICLE_TYPES = Object.keys(VEHICLE_LABELS) as VehicleType[]
-
 export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDetailsFormProps) {
   const { submit, isSubmitting, error } = useBookingSubmit(user)
 
@@ -30,7 +29,11 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
   const [dropContactPhone, setDropContactPhone] = useState('')
 
   const weight = Number(weightKg)
-  const maxKg = VEHICLE_MAX_KG[vehicleType]
+  const fares = useFareEstimate({ pickup, drop }, weight)
+
+  // Pricing's own limit when it has answered; the local table only until then.
+  const chosen = fares.estimate?.options.find((option) => option.vehicle_type === vehicleType)
+  const maxKg = chosen ? Number(chosen.max_weight_kg) : VEHICLE_MAX_KG[vehicleType]
   const weightError =
     weightKg !== '' && (!Number.isFinite(weight) || weight <= 0)
       ? 'Enter the weight in kilograms.'
@@ -43,7 +46,9 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
       ? 'Enter a 10-digit number.'
       : undefined
 
-  const canSubmit = !weightError && !phoneError && weight > 0
+  // An overweight choice is already explained by weightError; this catches a
+  // vehicle operations have switched off.
+  const canSubmit = !weightError && !phoneError && weight > 0 && chosen?.available !== false
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
@@ -64,26 +69,6 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
     <form className="booking-details" onSubmit={handleSubmit} noValidate>
       {error && <Alert tone="error">{error}</Alert>}
 
-      <div className="field">
-        <label className="field__label" htmlFor="vehicle-type">
-          Vehicle
-        </label>
-        <div className="field__control">
-          <select
-            id="vehicle-type"
-            className="field__input"
-            value={vehicleType}
-            onChange={(event) => setVehicleType(event.target.value as VehicleType)}
-          >
-            {VEHICLE_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {VEHICLE_LABELS[type]} — up to {VEHICLE_MAX_KG[type]} kg
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
       <Input
         label="Package weight (kg)"
         type="number"
@@ -93,6 +78,14 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
         value={weightKg}
         onChange={(event) => setWeightKg(event.target.value)}
         error={weightError}
+      />
+
+      <FareOptions
+        estimate={fares.estimate}
+        isLoading={fares.isLoading}
+        error={fares.error}
+        selected={vehicleType}
+        onSelect={setVehicleType}
       />
 
       <Input
@@ -128,8 +121,8 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
         <Button variant="secondary" onClick={onCancel} disabled={isSubmitting}>
           Back
         </Button>
-        <Button type="submit" disabled={!canSubmit} isLoading={isSubmitting} loadingText="Getting your fare…">
-          Get fare estimate
+        <Button type="submit" disabled={!canSubmit} isLoading={isSubmitting} loadingText="Locking in your fare…">
+          Continue
         </Button>
       </div>
     </form>

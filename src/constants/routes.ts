@@ -6,6 +6,7 @@ export const ROUTES = {
   profile: '/profile',
   addresses: '/profile/addresses',
   security: '/profile/security',
+  notifications: '/notifications',
   resetPassword: '/reset-password',
   partnerLogin: '/partner/login',
   partnerSignup: '/partner/signup',
@@ -13,6 +14,7 @@ export const ROUTES = {
   partnerDeliveries: '/partner/deliveries',
   partnerVehicle: '/partner/vehicle',
   partnerProfile: '/partner/profile',
+  partnerNotifications: '/partner/notifications',
 } as const
 
 export const orderPath = (id: number | string): string => `/orders/${id}`

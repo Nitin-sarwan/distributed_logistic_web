@@ -10,6 +10,8 @@ import {
 } from './messages'
 import { conflictMessage, partnerMessage, userMessage } from './serviceMessages'
 
+const DETAIL_IS_MESSAGE = ['/api/orders', '/api/deliveries', '/api/dispatch', '/api/pricing']
+
 export function toApiError(error: unknown): ApiError {
   if (error instanceof ApiError) return error
 
@@ -42,6 +44,14 @@ export function toApiError(error: unknown): ApiError {
   }
 
   const url = error.config?.url ?? ''
+
+  // These services write their details for the person reading them — "This
+  // offer has expired", "A two wheeler carries up to 30 kg" — so the detail is
+  // the message. Without this a 409 here fell through to the account-signup
+  // wording below and told a driver "That account already exists."
+  if (DETAIL_IS_MESSAGE.some((prefix) => url.startsWith(prefix))) {
+    return new ApiError(detailText, status, {}, detailText)
+  }
 
   const specific = url.startsWith('/api/partners')
     ? partnerMessage(status, detailText)

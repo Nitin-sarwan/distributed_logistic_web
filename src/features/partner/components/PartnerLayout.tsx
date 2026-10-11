@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { useCallback, useEffect, useState } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import { Loader } from '@/components/Loader'
+import { ROUTES } from '@/constants'
+import { OfferPanel, useCurrentOffer } from '@/features/dispatch'
 
 import { usePartner } from '../hooks/usePartner'
 import { PartnerHeader } from './PartnerHeader'
@@ -10,8 +12,19 @@ import { PartnerSidebar } from './PartnerSidebar'
 import './PartnerLayout.css'
 
 export function PartnerLayout() {
-  const { partner, logout } = usePartner()
+  const { partner, logout, refreshPartner } = usePartner()
   const location = useLocation()
+  const navigate = useNavigate()
+
+  // Accepting moves the driver to on_trip, so the status pill and the
+  // availability toggle need the fresh partner, and the job is on Deliveries.
+  const handleAccepted = useCallback(() => {
+    void refreshPartner()
+    navigate(ROUTES.partnerDeliveries)
+  }, [navigate, refreshPartner])
+
+  // Only an online driver can be offered work; polling anyone else is noise.
+  const offer = useCurrentOffer(partner?.status === 'online', handleAccepted)
 
   const [isNavOpen, setIsNavOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -63,6 +76,9 @@ export function PartnerLayout() {
         )}
 
         <main className="partner-shell__main">
+          <div className="partner-shell__offer">
+            <OfferPanel {...offer} />
+          </div>
           <Outlet />
         </main>
       </div>

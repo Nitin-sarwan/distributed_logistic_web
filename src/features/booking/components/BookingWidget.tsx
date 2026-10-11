@@ -3,6 +3,7 @@ import { useState, type FormEvent } from 'react'
 import { Alert } from '@/components/Alert'
 import { Button } from '@/components/Button'
 import { useAuth, useRequireAuth } from '@/features/auth'
+import { FareTeaser } from '@/features/pricing'
 
 import { useBooking } from '../hooks/useBooking'
 import { BookingDetailsForm } from './BookingDetailsForm'
@@ -62,6 +63,8 @@ export function BookingWidget() {
         markers={booking.markers}
         straightLineKm={booking.straightLineKm}
       />
+
+      <FareTeaser trip={{ pickup: booking.pickup.place, drop: booking.drop.place }} />
 
       <Button type="submit" size="lg" fullWidth disabled={!booking.canSubmit}>
         Continue

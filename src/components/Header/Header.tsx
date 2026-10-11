@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 import { Button } from '@/components/Button'
@@ -16,6 +17,8 @@ export interface HeaderProps {
   onSignup: () => void
   onLogout: () => void
   isLoggingOut: boolean
+  /** Shown beside the account menu when signed in — the app wires the bell in. */
+  notifications?: ReactNode
 }
 
 export function Header({
@@ -25,6 +28,7 @@ export function Header({
   onSignup,
   onLogout,
   isLoggingOut,
+  notifications,
 }: HeaderProps) {
   const navClass = ({ isActive }: { isActive: boolean }) =>
     cx('header__link', isActive && 'header__link--active')
@@ -69,7 +73,10 @@ export function Header({
           {isLoading ? (
             <span className="header__placeholder" aria-hidden="true" />
           ) : user ? (
-            <ProfileMenu user={user} onLogout={onLogout} isLoggingOut={isLoggingOut} />
+            <div className="header__account">
+              {notifications}
+              <ProfileMenu user={user} onLogout={onLogout} isLoggingOut={isLoggingOut} />
+            </div>
           ) : (
             <div className="header__auth">
               <Button variant="ghost" size="sm" onClick={onLogin}>
