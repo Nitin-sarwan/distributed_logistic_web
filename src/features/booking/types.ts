@@ -31,6 +31,9 @@ export const VEHICLE_MAX_KG: Record<VehicleType, number> = {
 export interface BookingDetails {
   pickup: Place
   drop: Place
+  /** Typed by the customer; the map has no house numbers. Empty when not given. */
+  pickupHouse: string
+  dropHouse: string
   vehicleType: VehicleType
   weightKg: number
   description: string

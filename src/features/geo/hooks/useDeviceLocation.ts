@@ -2,8 +2,15 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { LatLng } from '@/components/Map'
 
+import { isInIndia } from '../utils'
+
+export interface DeviceFix extends LatLng {
+  /** Radius in metres the browser is ~68% sure the device is within. */
+  accuracy: number
+}
+
 export interface UseDeviceLocationResult {
-  request: () => Promise<LatLng | null>
+  request: () => Promise<DeviceFix | null>
   isLocating: boolean
   error: string | null
   isDenied: boolean
@@ -18,6 +25,9 @@ const DENIED =
 
 const UNAVAILABLE =
   'We could not read your location. Try again, or place the pin on the map.'
+
+const OUTSIDE_INDIA =
+  'Your location appears to be outside India, where we do not deliver yet. Search for the address instead.'
 
 export function useDeviceLocation(): UseDeviceLocationResult {
   const [isLocating, setIsLocating] = useState(false)
@@ -43,14 +53,21 @@ export function useDeviceLocation(): UseDeviceLocationResult {
 
     setIsLocating(true)
 
-    return new Promise<LatLng | null>((resolve) => {
+    return new Promise<DeviceFix | null>((resolve) => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           if (isMounted.current) setIsLocating(false)
-          resolve({
+          const fix: DeviceFix = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-          })
+            accuracy: position.coords.accuracy,
+          }
+          if (!isInIndia(fix)) {
+            if (isMounted.current) setError(OUTSIDE_INDIA)
+            resolve(null)
+            return
+          }
+          resolve(fix)
         },
         (failure) => {
           if (isMounted.current) {
@@ -63,8 +80,10 @@ export function useDeviceLocation(): UseDeviceLocationResult {
         },
         {
           enableHighAccuracy: true,
-          timeout: 10_000,
-          maximumAge: 30_000,
+          timeout: 15_000,
+          // Always a fresh fix. A cached one may be from before the user moved,
+          // or a coarse Wi-Fi guess the browser made earlier.
+          maximumAge: 0,
         },
       )
     })

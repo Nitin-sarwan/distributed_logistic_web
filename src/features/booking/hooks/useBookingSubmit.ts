@@ -15,9 +15,14 @@ export interface UseBookingSubmitResult {
   error: string | null
 }
 
-function toAddress(place: Place, contact: { name: string; phone: string }): AddressPayload {
+function toAddress(
+  place: Place,
+  house: string,
+  contact: { name: string; phone: string },
+): AddressPayload {
   return {
-    address_line1: place.address_line1,
+    // The door first, then the street the map found: "5/172, SFS, Near V Park".
+    address_line1: house ? `${house}, ${place.address_line1}`.slice(0, 500) : place.address_line1,
     address_line2: place.address_line2,
     city: place.city || 'Unknown',
     // Only when the map gave a real one. Many places have none, and the
@@ -46,10 +51,10 @@ export function useBookingSubmit(user: User | null): UseBookingSubmitResult {
 
       const contact = { name: user.name, phone: user.phone }
       const pickup: OrderEndpointPayload = {
-        address: toAddress(details.pickup, contact),
+        address: toAddress(details.pickup, details.pickupHouse, contact),
       }
       const drop: OrderEndpointPayload = {
-        address: toAddress(details.drop, {
+        address: toAddress(details.drop, details.dropHouse, {
           name: details.dropContactName || user.name,
           phone: details.dropContactPhone || user.phone,
         }),

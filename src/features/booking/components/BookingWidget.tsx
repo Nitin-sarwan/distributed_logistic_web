@@ -58,6 +58,10 @@ export function BookingWidget() {
         onUseCurrentLocation={() => void booking.useCurrentPickup()}
       />
 
+      {booking.locationNotice && (
+        <Alert tone={booking.locationNotice.tone}>{booking.locationNotice.message}</Alert>
+      )}
+
       <BookingTripMap
         center={booking.center}
         markers={booking.markers}
