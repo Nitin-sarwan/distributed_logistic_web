@@ -24,6 +24,11 @@
   color: var(--color-text-muted);
 }
 
+.app__footer-links {
+  display: flex;
+  gap: var(--space-4);
+}
+
 .app__footer-inner span:first-child {
   font-weight: 600;
   color: var(--color-text);
