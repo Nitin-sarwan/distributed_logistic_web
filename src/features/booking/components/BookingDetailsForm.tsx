@@ -3,7 +3,7 @@ import { useState, type FormEvent } from 'react'
 import { Alert } from '@/components/Alert'
 import { Button } from '@/components/Button'
 import { Input } from '@/components/Input'
-import type { Place } from '@/features/geo'
+import { shortLabel, type Place } from '@/features/geo'
 import { FareOptions, useFareEstimate } from '@/features/pricing'
 import type { User } from '@/types'
 
@@ -22,6 +22,11 @@ export interface BookingDetailsFormProps {
 export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDetailsFormProps) {
   const { submit, isSubmitting, error } = useBookingSubmit(user)
 
+  // House, flat and plot numbers are not in any open map data for India, so
+  // "5/172, SFS" can only come from the customer. The map gives the street or
+  // area; this gives the door.
+  const [pickupHouse, setPickupHouse] = useState('')
+  const [dropHouse, setDropHouse] = useState('')
   const [vehicleType, setVehicleType] = useState<VehicleType>('two_wheeler')
   const [weightKg, setWeightKg] = useState('5')
   const [description, setDescription] = useState('')
@@ -59,6 +64,8 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
     void submit({
       pickup,
       drop,
+      pickupHouse: pickupHouse.trim(),
+      dropHouse: dropHouse.trim(),
       vehicleType,
       weightKg: weight,
       description,
@@ -71,6 +78,24 @@ export function BookingDetailsForm({ pickup, drop, user, onCancel }: BookingDeta
   return (
     <form className="booking-details" onSubmit={handleSubmit} noValidate>
       {error && <Alert tone="error">{error}</Alert>}
+
+      <Input
+        label="Pickup: house / flat / building (optional)"
+        placeholder="e.g. 5/172, SFS"
+        maxLength={120}
+        value={pickupHouse}
+        onChange={(event) => setPickupHouse(event.target.value)}
+        hint={shortLabel(pickup)}
+      />
+
+      <Input
+        label="Drop: house / flat / building (optional)"
+        placeholder="e.g. Flat 302, Tower B"
+        maxLength={120}
+        value={dropHouse}
+        onChange={(event) => setDropHouse(event.target.value)}
+        hint={shortLabel(drop)}
+      />
 
       <Input
         label="Package weight (kg)"

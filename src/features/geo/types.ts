@@ -15,6 +15,8 @@ export interface ReverseGeocodeResult {
   latitude: number
   longitude: number
   place: Place | null
+  /** False for a point in a country we do not deliver to (e.g. Nepal). */
+  in_service_area?: boolean
 }
 
 export interface PickedLocation extends LatLng {

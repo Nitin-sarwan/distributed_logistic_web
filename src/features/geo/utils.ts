@@ -2,6 +2,20 @@ import type { LatLng } from '@/components/Map'
 
 import type { Place } from './types'
 
+// The same box the backend restricts search to (utils/geocoder.py INDIA_BBOX).
+// Generous at the borders; it exists to catch a browser that reports a location
+// abroad (a VPN, a stale fix), not to draw the national boundary.
+const INDIA_BOUNDS = { minLat: 6.5, maxLat: 35.7, minLng: 68.1, maxLng: 97.4 }
+
+export function isInIndia({ latitude, longitude }: LatLng): boolean {
+  return (
+    latitude >= INDIA_BOUNDS.minLat &&
+    latitude <= INDIA_BOUNDS.maxLat &&
+    longitude >= INDIA_BOUNDS.minLng &&
+    longitude <= INDIA_BOUNDS.maxLng
+  )
+}
+
 export function formatCoordinates({ latitude, longitude }: LatLng): string {
   return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`
 }
