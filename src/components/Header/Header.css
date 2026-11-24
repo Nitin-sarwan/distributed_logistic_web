@@ -186,6 +186,9 @@
   .header__placeholder {
     width: 100px;
   }
+  .header__link--partner {
+    display: none;
+  }
 }
 
 .header__account {

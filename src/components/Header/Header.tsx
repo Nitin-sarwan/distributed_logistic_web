@@ -64,6 +64,15 @@ export function Header({
             Track order
           </NavLink>
 
+          {/* Drivers sign up in the /partner section, which no customer page
+              otherwise links to. Hidden on phones, where the footer has it. */}
+          <NavLink
+            to={ROUTES.partnerSignup}
+            className={(state) => cx(navClass(state), 'header__link--partner')}
+          >
+            Drive with us
+          </NavLink>
+
           {user && (
             <NavLink to={ROUTES.orders} className={navClass}>
               My orders
